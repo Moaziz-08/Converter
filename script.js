@@ -511,3 +511,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialisiere die Ausgabe
   updateOutput()
 })
+
