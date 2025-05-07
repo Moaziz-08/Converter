@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text zu Handschrift Konverter</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts für Handschriften -->
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Schoolbell&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Just+Me+Again+Down+Here&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+    <!-- html2canvas und jsPDF für PDF-Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Text zu Handschrift Konverter</h1>
+
+        <div id="success-message" class="success-message hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span id="success-text"></span>
+        </div>
+
+        <div class="tabs">
+            <div class="tab-list">
+                <button id="tab-convert" class="tab-button active">Text umwandeln</button>
+                <button id="tab-create" class="tab-button">Eigene Handschrift erstellen</button>
+            </div>
+
+            <div id="tab-content-convert" class="tab-content active">
+                <div class="grid-layout">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Ihr Text</h2>
+                            <p class="card-description">Geben Sie den Text ein, den Sie in Handschrift umwandeln möchten</p>
+                        </div>
+                        <div class="card-content">
+                            <textarea id="input-text" class="textarea" placeholder="Geben Sie hier Ihren Text ein...">Geben Sie hier Ihren Text ein...</textarea>
+                        </div>
+                        <div class="card-footer">
+                            <div class="select-container">
+                                <select id="font-select" class="select">
+                                    <option value="Indie Flower">Indie Flower</option>
+                                    <option value="Kalam">Kalam</option>
+                                    <option value="Shadows Into Light">Shadows Into Light</option>
+                                    <option value="Homemade Apple">Homemade Apple</option>
+                                    <option value="Architects Daughter">Architects Daughter</option>
+                                    <option value="Dancing Script">Dancing Script</option>
+                                    <option value="Caveat">Caveat</option>
+                                    <option value="Pacifico">Pacifico</option>
+                                    <option value="Sacramento">Sacramento</option>
+                                    <option value="Satisfy">Satisfy</option>
+                                    <option value="Reenie Beanie">Reenie Beanie</option>
+                                    <option value="Patrick Hand">Patrick Hand</option>
+                                    <option value="Schoolbell">Schoolbell</option>
+                                    <option value="Just Me Again Down Here">Just Me Again Down Here</option>
+                                    <option value="Marck Script">Marck Script</option>
+                                </select>
+                                <button id="settings-button" class="icon-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Vorschau</h2>
+                            <p class="card-description">So sieht Ihr Text in Handschrift aus</p>
+                        </div>
+                        <div class="card-content">
+                            <div id="preview" class="preview">
+                                <div id="preview-content" class="preview-content">
+                                    <div id="text-output" class="text-output">Geben Sie hier Ihren Text ein...</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button id="copy-button" class="button outline">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                Kopieren
+                            </button>
+                            <div class="button-group">
+                                <button id="image-button" class="button outline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                    Als Bild speichern
+                                </button>
+                                <button id="pdf-button" class="button primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    Als PDF speichern
+                                </button>
+                                <button id="simple-pdf-button" class="button secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    Einfaches PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-content-create" class="tab-content">
+                <div class="grid-layout">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Eigene Handschrift erstellen</h2>
+                            <p class="card-description">Zeichnen Sie jeden Buchstaben und Sonderzeichen, um Ihre eigene Handschrift zu erstellen</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="form-group">
+                                <label for="font-name" class="label">Name Ihrer Handschrift</label>
+                                <input type="text" id="font-name" class="input" placeholder="z.B. Meine Handschrift">
+                            </div>
+
+                            <div class="progress-container">
+                                <div class="progress-text">Fortschritt: <span id="progress-value">0</span>%</div>
+                                <div class="badge-group">
+                                    <span class="badge active" data-group="lowercase">Kleinbuchstaben</span>
+                                    <span class="badge" data-group="uppercase">Großbuchstaben</span>
+                                    <span class="badge" data-group="numbers">Zahlen</span>
+                                    <span class="badge" data-group="special">Sonderzeichen</span>
+                                </div>
+                            </div>
+
+                            <div class="inner-tabs">
+                                <div class="inner-tab-list">
+                                    <button id="tab-draw" class="inner-tab-button active">Zeichnen</button>
+                                    <button id="tab-settings" class="inner-tab-button">Einstellungen</button>
+                                </div>
+
+                                <div id="tab-content-draw" class="inner-tab-content active">
+                                    <div class="drawing-container">
+                                        <div class="character-info">
+                                            <h3 class="character-title">Zeichen: <span id="current-char" class="monospace">a</span></h3>
+                                            <p class="character-subtitle">1 von 26 in Gruppe "Kleinbuchstaben"</p>
+                                        </div>
+
+                                        <div id="canvas-container" class="canvas-container">
+                                            <canvas id="drawing-canvas" width="300" height="200" class="drawing-canvas"></canvas>
+                                        </div>
+
+                                        <div class="button-row">
+                                            <button id="prev-char" class="button outline">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                                </svg>
+                                                Zurück
+                                            </button>
+                                            <button id="undo-button" class="button outline" disabled>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                    <path d="M3 7v6h6"></path>
+                                                    <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+                                                </svg>
+                                                Rückgängig
+                                            </button>
+                                            <button id="clear-button" class="button outline">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                                Löschen
+                                            </button>
+                                            <button id="next-char" class="button outline">
+                                                Weiter
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <div class="drawing-settings">
+                                            <div class="form-group">
+                                                <label for="pen-size" class="label">Stiftgröße: <span id="pen-size-value">3</span>px</label>
+                                                <input type="range" id="pen-size" min="1" max="10" step="0.5" value="3" class="slider">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="pen-color" class="label">Stiftfarbe</label>
+                                                <input type="color" id="pen-color" value="#000000" class="color-picker">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group switch-container">
+                                            <label for="show-guidelines" class="label">Hilfslinien anzeigen</label>
+                                            <label class="switch">
+                                                <input type="checkbox" id="show-guidelines" checked>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+
+                                        <div id="guideline-type-container" class="form-group">
+                                            <label for="guideline-type" class="label">Linientyp</label>
+                                            <select id="guideline-type" class="select">
+                                                <option value="none">Keine</option>
+                                                <option value="baseline">Grundlinie</option>
+                                                <option value="twoLines">Zwei Linien</option>
+                                                <option value="fourLines" selected>Vier Linien</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="tab-content-settings" class="inner-tab-content">
+                                    <div class="settings-container">
+                                        <div class="form-group">
+                                            <label for="letter-spacing" class="label">Buchstabenabstand: <span id="letter-spacing-value">0.5</span></label>
+                                            <input type="range" id="letter-spacing" min="0" max="2" step="0.1" value="0.5" class="slider">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="baseline-variation" class="label">Grundlinien-Variation: <span id="baseline-variation-value">2</span>px</label>
+                                            <input type="range" id="baseline-variation" min="0" max="10" step="0.5" value="2" class="slider">
+                                            <p class="help-text">Bestimmt, wie stark die Buchstaben von der Grundlinie abweichen können.</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="size-variation" class="label">Größen-Variation: <span id="size-variation-value">0.10</span></label>
+                                            <input type="range" id="size-variation" min="0" max="0.3" step="0.01" value="0.1" class="slider">
+                                            <p class="help-text">Bestimmt, wie stark die Größe der Buchstaben variieren kann.</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="rotation-variation" class="label">Rotations-Variation: <span id="rotation-variation-value">3</span>°</label>
+                                            <input type="range" id="rotation-variation" min="0" max="10" step="0.5" value="3" class="slider">
+                                            <p class="help-text">Bestimmt, wie stark die Buchstaben rotiert werden können.</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="scale-factor" class="label">Skalierungsfaktor: <span id="scale-factor-value">1.5</span></label>
+                                            <input type="range" id="scale-factor" min="0.5" max="3" step="0.1" value="1.5" class="slider">
+                                            <p class="help-text">Bestimmt die Größe der Buchstaben im Verhältnis zur Schriftgröße.</p>
+                                        </div>
+
+                                        <hr class="divider">
+
+                                        <div class="form-group">
+                                            <label for="preview-text" class="label">Vorschautext</label>
+                                            <textarea id="preview-text" class="textarea" placeholder="Text für die Vorschau eingeben...">The quick brown fox jumps over the lazy dog. 123!?</textarea>
+                                        </div>
+
+                                        <div class="button-row">
+                                            <button id="export-button" class="button outline">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                Exportieren
+                                            </button>
+                                            <div class="file-input-container">
+                                                <button class="button outline">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                                    </svg>
+                                                    Importieren
+                                                </button>
+                                                <input type="file" id="import-file" accept=".json" class="file-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button id="save-font-button" class="button primary full-width">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Handschrift speichern
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Vorschau Ihrer Handschrift</h2>
+                            <p class="card-description">Sehen Sie, wie Ihre Handschrift aussehen wird</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="character-grid-container">
+                                <div id="character-grid" class="character-grid"></div>
+                            </div>
+
+                            <div class="preview-box">
+                                <h3 class="preview-title">Vorschau:</h3>
+                                <div id="handwriting-preview" class="handwriting-preview">
+                                    <div id="preview-text-output" class="preview-text-output"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Einstellungen</h2>
+                    <button id="close-modal" class="close-button">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="font-size" class="label">Schriftgröße: <span id="font-size-value">18</span>px</label>
+                        <input type="range" id="font-size" min="12" max="36" step="1" value="18" class="slider">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="line-height" class="label">Zeilenhöhe: <span id="line-height-value">1.8</span></label>
+                        <input type="range" id="line-height" min="1" max="3" step="0.1" value="1.8" class="slider">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="text-spacing" class="label">Buchstabenabstand: <span id="text-spacing-value">0.5</span></label>
+                        <input type="range" id="text-spacing" min="0" max="2" step="0.1" value="0.5" class="slider">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="text-color" class="label">Textfarbe</label>
+                        <div class="color-container">
+                            <input type="color" id="text-color" value="#333333" class="color-picker">
+                            <span id="text-color-value">#333333</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="paper-settings-button" class="accordion-button">
+                            Papiereinstellungen
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div id="paper-settings-panel" class="accordion-panel">
+                            <div class="form-group">
+                                <label for="paper-style" class="label">Papierstil</label>
+                                <select id="paper-style" class="select">
+                                    <option value="blank">Leer</option>
+                                    <option value="lined">Liniert</option>
+                                    <option value="grid" selected>Kariert</option>
+                                    <option value="dotted">Gepunktet</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="paper-color" class="label">Papierfarbe</label>
+                                <div class="color-container">
+                                    <input type="color" id="paper-color" value="#f8f8f8" class="color-picker">
+                                    <span id="paper-color-value">#f8f8f8</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="grid-color" class="label">Linienfarbe</label>
+                                <div class="color-container">
+                                    <input type="color" id="grid-color" value="#dddddd" class="color-picker">
+                                    <span id="grid-color-value">#dddddd</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="grid-size" class="label">Liniengröße: <span id="grid-size-value">20</span>px</label>
+                                <input type="range" id="grid-size" min="10" max="40" step="1" value="20" class="slider">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="paper-margin" class="label">Seitenrand: <span id="paper-margin-value">40</span>px</label>
+                                <input type="range" id="paper-margin" min="0" max="80" step="1" value="40" class="slider">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="variation-settings-button" class="accordion-button">
+                            Handschrift-Variationen
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div id="variation-settings-panel" class="accordion-panel">
+                            <div class="form-group switch-container">
+                                <label for="handwriting-variation" class="label">Handschrift-Variationen</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="handwriting-variation" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="form-group switch-container">
+                                <label for="random-rotation" class="label">Zufällige Rotation</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="random-rotation" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="form-group switch-container">
+                                <label for="random-size" class="label">Zufällige Größe</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="random-size" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="handwriting-creator.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
